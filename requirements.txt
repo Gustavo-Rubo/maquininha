@@ -1,0 +1,6 @@
+numpy
+flask
+python-dotenv
+Flask-Script
+piexif
+pandas
