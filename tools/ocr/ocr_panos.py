@@ -43,8 +43,9 @@ def ocr(file_og):
         'lat': lat,
         'long': long,
         'source': source,
+        'name': '',
         'ocr': easyocr_res,
-        'description': easyocr_res
+        'description': easyocr_res,
     }
 
 
