@@ -3,8 +3,8 @@ import base64
 import numpy as np
 from os import path, getenv
 from flask import Flask, jsonify, request, render_template, send_from_directory
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
+# from flask_sqlalchemy import SQLAlchemy
+# from flask_migrate import Migrate
 from dotenv import load_dotenv
 
 DATABASE_PATH = path.join('..', 'data', 'database.json')
