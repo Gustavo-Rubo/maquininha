@@ -58,10 +58,10 @@ def index():
             res = db[[str.lower(text) in str.lower(
                 ' '.join(d['ocr'])) for d in db]]
 
-            # for r in res:
-            #     with open(path.join('thumbs', r['file']), 'rb') as f:
-            #         thumb = f.read()
-            #         r['thumb_data'] = str(base64.b64encode(thumb))
+        for r in res:
+            with open(path.join('thumbs', r['originalfilepath']), 'rb') as f:
+                thumb = f.read()
+                r['thumb_data'] = str(base64.b64encode(thumb))
 
         return jsonify(list(res))
 

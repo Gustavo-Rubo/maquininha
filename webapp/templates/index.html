@@ -8,6 +8,13 @@
    integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
 
 <script type="text/javascript">
+   function ellipsis(text, maxLength) {
+      if (text.length > maxLength) {
+         return text.substring(0, maxLength) + '...';
+      }
+      return text;
+   }
+
    window.onload = function () {
       // https://stackoverflow.com/questions/16245767/creating-a-blob-from-a-base64-string-in-javascript
       const b64toBlob = (b64Data, contentType = '', sliceSize = 512) => {
@@ -53,13 +60,13 @@
          markers.clearLayers();
          myJson.forEach(function (item, index) {
             var marker = L.marker([item.lat, item.long]);
-            // var blob = b64toBlob(item['thumb_data'].slice(2, -1), { type: 'image/jpg' })
-            // var thumb_url = URL.createObjectURL(blob);
+            var blob = b64toBlob(item['thumb_data'].slice(2, -1), { type: 'image/jpg' })
+            var thumb_url = URL.createObjectURL(blob);
 
-            // marker.bindPopup("<div><a href='image/" + item['file'] + "'>" +
-            //    "<img class='marker_img' src='" + thumb_url + "'></a>" +
-            //    "<p>" + item["ocr"].join('; ') + '</p></div>');
-            marker.bindPopup("<div><p>" + item["ocr"].join('; ') + '</p></div>');
+            marker.bindPopup("<div><a href='image/" + item['originalfilepath'] + "'>" +
+               "<img class='marker_img' src='" + thumb_url + "'></a>" +
+               "<p>" + ellipsis(item["description"].join('; '), 100) + '</p></div>');
+            // marker.bindPopup("<div><p>" + item["description"].join('; ') + '</p></div>');
             markers.addLayer(marker);
          });
          return false
@@ -67,9 +74,9 @@
    }
 </script>
 
-<div class="container">
-   <div class="row h-100 m-5">
-      <div class="col-md-4">
+<div class="container-fluid p-0">
+   <div class="row h-100 m-0">
+      <div class="col-md-4 mt-3">
          <form id="frm1" name="frm1" method="post">
             <input type="text" id="search" name="search">
             <input type="submit" value="Submit">
@@ -82,12 +89,16 @@
 
             sugestões: exclusiv, cicl, proibido, descarga, oceano, MULTILIXO, CASA DAS CALDEIRAS</br>
          </div>
-         </br> 
+         </br>
          <div class="justify-end"><a href='https://github.com/Gustavo-Rubo/maquininha/tree/json_db'>git</a></div>
       </div>
-      <div class="col-md-8" id="map"></div>
+
+      <div class="col-md-8 h-100 p-0 m-0" id="map"></div>
    </div>
 </div>
+
+
+
 
 <style>
    #map {
