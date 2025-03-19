@@ -51,7 +51,9 @@ def index():
         text = data['search']
 
         res = []
-        if text != '':
+        if text == '':
+            res = db
+        else:
             # TODO: better search function
             res = db[[str.lower(text) in str.lower(
                 ' '.join(d['ocr'])) for d in db]]
@@ -77,7 +79,7 @@ def table():
         if text != '':
             # TODO: better search function
             res = db[[str.lower(text) in str.lower(
-                ' '.join(d['ocr'])) for d in db]]
+                ' '.join(d['description'])) for d in db]]
 
             # for r in res:
             #     with open(path.join('thumbs', r['file']), 'rb') as f:

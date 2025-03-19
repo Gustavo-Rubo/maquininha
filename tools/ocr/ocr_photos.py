@@ -27,7 +27,7 @@ def get_lat_long(img):
 
 def ocr(file_og):
     file = path.split(file_og)[1]
-    panoid = file.split('=')[0]
+    # panoid = file.split('=')[0]
     # source = 'google' if len(panoid) <= 23 else 'user'
 
     img = Image.open(file_og)
@@ -40,6 +40,7 @@ def ocr(file_og):
     }
     lat = (-1 if exif['GPSInfo'][1] == 'S' else 1) * dms_to_dec(exif['GPSInfo'][2])
     long = (-1 if exif['GPSInfo'][3] == 'W' else 1) * dms_to_dec(exif['GPSInfo'][4])
+    datetime = exif['DateTime']
 
     try: 
         easyocr_res = easyocr_reader.readtext(np.array(img),
@@ -50,21 +51,27 @@ def ocr(file_og):
         easyocr_res = ''
 
     return {
+        'id': '',
+        'macroid': '',
+        'submacroid': '',
+        'daterecorded': datetime,
+        'originalfilepath': file,
         'panoid': '',
         'lat': lat,
         'long': long,
         'source': 'photo',
-        'file': file,
-        'ocr': easyocr_res
+        'ocr': easyocr_res,
+        'description': easyocr_res
     }
 
 
-paths = glob(path.join('photos', '*'))
+base_path = path.join('.', '.')
+paths = glob(path.join(base_path, 'images_raw', 'photos', '*'))
 paths = [path for path in paths if path[-4] == '.']
 
 old_data = []
 if not reprocess_existing:
-    with open(path.join('data', 'database_photos.json'), 'r') as f:
+    with open(path.join(base_path, 'data', 'database_photos.json'), 'r') as f:
         old_data = json.load(f)
     new_paths = []
     old_panoids = [d['panoid'] for d in old_data]
@@ -94,5 +101,5 @@ print(f'performed ocr in {len(data)} files')
 print(f'run time: {stop - start:.0f}s')
 print(f'time per file: {(stop - start)/len(paths):.2f}s')
 
-with open(path.join('data', 'database_photos.json'), 'w') as f:
+with open(path.join(base_path, 'data', 'database_photos.json'), 'w') as f:
     json.dump(new_data, f)

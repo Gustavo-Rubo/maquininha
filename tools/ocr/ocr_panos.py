@@ -34,21 +34,27 @@ def ocr(file_og):
 
 
     return {
+        'id': '',
+        'macroid': '',
+        'submacroid': '',
+        'daterecorded': '',
+        'originalfilepath': file,
         'panoid': panoid,
         'lat': lat,
         'long': long,
         'source': source,
-        'thumb_file': file,
-        'ocr': easyocr_res
+        'ocr': easyocr_res,
+        'description': easyocr_res
     }
 
 
-paths = glob(path.join('stitched', 'z5', '*'))
-paths.extend(glob(path.join('stitched', 'z4', '*')))
+base_path = path.join('.', '.')
+paths = glob(path.join(base_path, 'images_raw', 'street_view', 'stitched', 'z5', '*'))
+paths.extend(glob(path.join(base_path, 'images_raw', 'street_view', 'stitched', 'z4', '*')))
 
 old_data = []
 if not reprocess_existing:
-    with open('database.json', 'r') as f:
+    with open(path.join(base_path, 'data', 'database_panos.json'), 'r') as f:
         old_data = json.load(f)
     new_paths = []
     old_panoids = [d['panoid'] for d in old_data]
@@ -75,5 +81,5 @@ print(f'performed ocr in {len(data)} files')
 print(f'run time: {stop - start:.0f}s')
 print(f'time per file: {(stop - start)/len(paths):.2f}s')
 
-with open('database.json', 'w') as f:
+with open(path.join(base_path, 'data', 'database_panos.json'), 'w') as f:
     json.dump(new_data, f)
