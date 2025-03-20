@@ -11,7 +11,7 @@ DATABASE_PATH = path.join('..', 'data', 'database.json')
 
 load_dotenv()
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static')
 
 # env_config = getenv("APP_SETTINGS", "config.DevelopmentConfig")
 # app.config.from_object(env_config)
@@ -40,6 +40,10 @@ with open(DATABASE_PATH, 'r') as f:
 def send_image(path):
     return send_from_directory('images', path)
 
+@app.route('/thumb/<path:path>')
+def send_thumb(path):
+    return send_from_directory('thumbs', path)
+
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -49,17 +53,16 @@ def index():
 
         data = request.json
         text = data['search']
+        macro = data['macro']
+        origin = data['origin']
 
-        res = []
+        res = db
+        if macro != 'todos':
+            res = res[[r['macro'] == macro for r in res]]
+        if origin != 'todos':
+            res = res[[r['origin'] == origin for r in res]]
         if text != '':
-            # TODO: better search function
-            res = db[[str.lower(text) in str.lower(
-                ' '.join(d['ocr'])) for d in db]]
-
-            # for r in res:
-            #     with open(path.join('thumbs', r['file']), 'rb') as f:
-            #         thumb = f.read()
-            #         r['thumb_data'] = str(base64.b64encode(thumb))
+            res = res[[str.lower(text) in str.lower(' '.join(r['description'])) for r in res]]
 
         return jsonify(list(res))
 
@@ -77,7 +80,7 @@ def table():
         if text != '':
             # TODO: better search function
             res = db[[str.lower(text) in str.lower(
-                ' '.join(d['ocr'])) for d in db]]
+                ' '.join(d['description'])) for d in db]]
 
             # for r in res:
             #     with open(path.join('thumbs', r['file']), 'rb') as f:

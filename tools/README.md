@@ -18,3 +18,17 @@ gets all raw tiles and stitches them in one image for each panorama and zoom lev
 
 ### ocr.py
 runs ocr (optical character recognition) on all high resolution images. saves the recognized text in a .json file
+
+
+## creating the images and thumbs
+
+```
+time for i in images_raw/street_view/stitched/z5/*; do convert "$i" -resize 4000x500 -quality 95 webapp/images/"$(basename $i)"; done;
+time for i in images_raw/street_view/stitched/z4/*; do convert "$i" -resize 4000x500 -quality 95 webapp/images/"$(basename $i)"; done;
+time for i in images_raw/photos/*; do convert "$i" -resize 1000x1000 -quality 95 webapp/images/"$(basename $i)"; done;
+
+
+time for i in images_raw/street_view/stitched/z5/*; do convert "$i" -resize 400x50 -quality 95 webapp/thumbs/"$(basename $i)"; done;
+time for i in images_raw/street_view/stitched/z4/*; do convert "$i" -resize 400x50 -quality 95 webapp/thumbs/"$(basename $i)"; done;
+time for i in images_raw/photos/*; do convert "$i" -resize 200x200 -quality 95 webapp/thumbs/"$(basename $i)"; done;
+```

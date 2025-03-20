@@ -8,35 +8,102 @@
    integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
 
 <script type="text/javascript">
+   function ellipsis(text, maxLength) {
+      if (text.length > maxLength) {
+         return text.substring(0, maxLength) + '...';
+      }
+      return text;
+   }
+
+   function sub_text(text, sub) {
+      return text == '' ? sub : text;
+   }
+
+   // Function to disable or enable submit button based on checkbox
+   function toggleSubmit() {
+      var submitBtn = document.getElementById("submitBtn");
+      var checkbox = document.getElementById("checkboxAEQ");
+      submitBtn.disabled = checkbox.checked;
+   }
+
+   function resetSubmit() {
+      var submitBtn = document.getElementById("submitBtn");
+      var checkbox = document.getElementById("checkboxAEQ");
+      submitBtn.disabled = true;
+      checkbox.checked = true;
+   }
+
    window.onload = function () {
-      // https://stackoverflow.com/questions/16245767/creating-a-blob-from-a-base64-string-in-javascript
-      const b64toBlob = (b64Data, contentType = '', sliceSize = 512) => {
-         const byteCharacters = atob(b64Data);
-         const byteArrays = [];
+      resetSubmit();
 
-         for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-            const slice = byteCharacters.slice(offset, offset + sliceSize);
+      // Set up icons for different origins
+      const blueIcon = new L.Icon({
+         iconUrl: 'static/marker-icon-2x-blue.png',
+         iconSize: [25, 41],
+         iconAnchor: [12, 41],
+         popupAnchor: [1, -34],
+         tooltipAnchor: [16, -28],
+         shadowSize: [41, 41]
+      });
+      const redIcon = new L.Icon({
+         iconUrl: 'static/marker-icon-2x-red.png',
+         iconSize: [25, 41],
+         iconAnchor: [12, 41],
+         popupAnchor: [1, -34],
+         tooltipAnchor: [16, -28],
+         shadowSize: [41, 41]
+      });
+      const greenIcon = new L.Icon({
+         iconUrl: 'static/marker-icon-2x-green.png',
+         iconSize: [25, 41],
+         iconAnchor: [12, 41],
+         popupAnchor: [1, -34],
+         tooltipAnchor: [16, -28],
+         shadowSize: [41, 41]
+      });
 
-            const byteNumbers = new Array(slice.length);
-            for (let i = 0; i < slice.length; i++) {
-               byteNumbers[i] = slice.charCodeAt(i);
-            }
+      // Create icon mapping based on origin
+      const icons = {
+         'photo': blueIcon,
+         'streetview-google': redIcon,
+         'streetview-user': greenIcon
+      };
 
-            const byteArray = new Uint8Array(byteNumbers);
-            byteArrays.push(byteArray);
-         }
+      function openModal(item) {
+         // Populate modal with item details
+         document.getElementById('modalName').textContent = sub_text(item["name"], "[sem nome]");
+         document.getElementById('modalMacro').textContent = sub_text(item["macro"], "[sem macro]");
+         document.getElementById('modalSubmacro').textContent = sub_text(item["submacro"], "[sem submacro]");
+         document.getElementById('modalOrigem').textContent = sub_text(item["origin"], "[sem origem]");
+         document.getElementById('modalDateRecorded').textContent = sub_text(item["daterecorded"], "[sem data]");
+         document.getElementById('modalDescription').textContent = sub_text(item["description"].join('; '), "[sem descrição]");
 
-         const blob = new Blob(byteArrays, { type: contentType });
-         return blob;
+         // Set the image
+         document.getElementById('modalImage').src = 'image/' + item['originalfilepath'];
+         document.getElementById('modalImageLink').href = 'image/' + item['originalfilepath'];
+
+         // Reinitialize the minimap whenever the modal is opened
+         minimapmarkers.clearLayers();
+         minimap.setView([item.lat + 0.001, item.long - 0.002], 17);
+         var minimapmarker = L.marker([item.lat, item.long]);
+         minimapmarkers.addLayer(minimapmarker);
+
+         // Show the modal
+         var myModal = new bootstrap.Modal(document.getElementById('itemModal'));
+         myModal.show();
       }
 
-
       document.getElementById('frm1').onsubmit = async function (e) {
-         e.preventDefault()
+         e.preventDefault();
 
-         el = document.getElementById("frm1").elements;
-         submit_text = el[0].value
-         data = { 'search': submit_text }
+         // Get the form input values
+         const el = document.getElementById("frm1").elements;
+         const submit_text = el["texto"].value;
+         const macro = el["macro"].value;  // Single value from dropdown
+         const origem = el["origem"].value;  // Single value from dropdown
+         const isAEQ = el["checkboxAEQ"].checked;
+
+         const data = { 'search': submit_text, 'macro': macro, 'origin': origem, 'isAEQ': isAEQ };
 
          const response = await fetch('/', {
             'method': 'POST',
@@ -48,44 +115,154 @@
          });
 
          const myJson = await response.json();
-         this.myJson = myJson
 
          markers.clearLayers();
          myJson.forEach(function (item, index) {
-            var marker = L.marker([item.lat, item.long]);
-            // var blob = b64toBlob(item['thumb_data'].slice(2, -1), { type: 'image/jpg' })
-            // var thumb_url = URL.createObjectURL(blob);
+            const marker = L.marker([item.lat, item.long], { icon: icons[item['origin']] });
 
-            // marker.bindPopup("<div><a href='image/" + item['file'] + "'>" +
-            //    "<img class='marker_img' src='" + thumb_url + "'></a>" +
-            //    "<p>" + item["ocr"].join('; ') + '</p></div>');
-            marker.bindPopup("<div><p>" + item["ocr"].join('; ') + '</p></div>');
+            const popupContent = `<div><a href='image/${item['originalfilepath']}'>
+                              <img class='marker_img' src='${thumb_url}'></a>
+                              <p class="fw-bold fs-5">${sub_text(item["name"], "[sem nome]")} - ${sub_text(item["macro"], "[sem macro]")}</p>
+                              <p>${sub_text(ellipsis(item["description"].join('; '), 60), "[sem descrição]")}</p></div >`;
+            marker.bindPopup(popupContent, { autoPan: true });
+
+            // marker.on('click', function () {
+            //    openModal(item);
+            // });
+
             markers.addLayer(marker);
          });
-         return false
+
+         return false;
       }
    }
 </script>
 
-<div class="container">
-   <div class="row h-100 m-5">
-      <div class="col-md-4">
-         <form id="frm1" name="frm1" method="post">
-            <input type="text" id="search" name="search">
-            <input type="submit" value="Submit">
-         </form>
-         <div>
-            "foto" para filtrar por fotos</br>
-            "google-streetview" para filtrar por imagens do streetview</br>
-            "google-user" para filtrar por panoramas no streetview upados por usuários</br>
-            "" para mostrar tudo (demora)</br>
-
-            sugestões: exclusiv, cicl, proibido, descarga, oceano, MULTILIXO, CASA DAS CALDEIRAS</br>
+<!-- Modal Structure -->
+<div class="modal fade" id="itemModal" tabindex="-1" aria-labelledby="itemModalLabel" aria-hidden="true">
+   <div class="modal-dialog modal-lg" style="max-width: 90%; max-height: 90vh;">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h5 class="modal-title" id="itemModalLabel">Item Details</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
          </div>
-         </br> 
-         <div class="justify-end"><a href='https://github.com/Gustavo-Rubo/maquininha/tree/json_db'>git</a></div>
+         <div class="modal-body d-flex" style="overflow-y: auto;">
+            <!-- Left Side: Item Information -->
+            <div class="col-md-6">
+               <p><strong>Name:</strong> <span id="modalName"></span></p>
+               <p><strong>Macro:</strong> <span id="modalMacro"></span></p>
+               <p><strong>Submacro:</strong> <span id="modalSubmacro"></span></p>
+               <p><strong>Origem:</strong> <span id="modalOrigem"></span></p>
+               <p><strong>Date Recorded:</strong> <span id="modalDateRecorded"></span></p>
+               <p><strong>Description:</strong> <span id="modalDescription"></span></p>
+            </div>
+
+            <!-- Right Side: Item Image and Minimap -->
+            <div class="col-md-6">
+               <a id="modalImageLink"><img id="modalImage" class="img-fluid" alt="Item Image"></a>
+               <div id="minimap" style="height: 200px; margin-top: 10px;"></div>
+            </div>
+         </div>
       </div>
-      <div class="col-md-8" id="map"></div>
+   </div>
+</div>
+
+<div class="container-fluid p-0">
+   <div class="row h-100 m-0">
+      <div class="col-md-4 mt-3">
+         <form id="frm1" name="frm1" method="post">
+            <div class="mb-3">
+               <label for="macro" class="form-label">Macro</label>
+               <select name="macro" id="macro" class="form-select">
+                  <option value="todos">Todos</option>
+                  <option value="CDI">CDI</option>
+                  <option value="CEPE">CEPE</option>
+                  <option value="CRUSP">CRUSP</option>
+                  <option value="DAMA01">DAMA01</option>
+                  <option value="ECA">ECA</option>
+                  <option value="EEFE">EEFE</option>
+                  <option value="EP">EP</option>
+                  <option value="FAU">FAU</option>
+                  <option value="FEA">FEA</option>
+                  <option value="FFLCH">FFLCH</option>
+                  <option value="FMVZ">FMVZ</option>
+                  <option value="HU">HU</option>
+                  <option value="IAG">IAG</option>
+                  <option value="ICB">ICB</option>
+                  <option value="ICB">ICB</option>
+                  <option value="IEE">IEE</option>
+                  <option value="IF">IF</option>
+                  <option value="IME">IME</option>
+                  <option value="IO">IO</option>
+                  <option value="IP">IP</option>
+                  <option value="IPEN">IPEN</option>
+                  <option value="IPT">IPT</option>
+                  <option value="IRI">IRI</option>
+                  <option value="acadepol">acadepol</option>
+                  <option value="antiga prefeitura">antiga prefeitura</option>
+                  <option value="av. almeida prado">av. almeida prado</option>
+                  <option value="av. antonio barros ulhoa cintra">av. antonio barros ulhoa cintra</option>
+                  <option value="av. da universidade">av. da universidade</option>
+                  <option value="av. ernesto leme">av. ernesto leme</option>
+                  <option value="av. lineu prestes">av. lineu prestes</option>
+                  <option value="av. luciano gualberto">av. luciano gualberto</option>
+                  <option value="av. lúcio martins rodrigues">av. lúcio martins rodrigues</option>
+                  <option value="av. mello moraes">av. mello moraes</option>
+                  <option value="bancos">bancos</option>
+                  <option value="barracões">barracões</option>
+                  <option value="bio">bio</option>
+                  <option value="brasiliana">brasiliana</option>
+                  <option value="centro de informações">centro de informações</option>
+                  <option value="educação">educação</option>
+                  <option value="geo">geo</option>
+                  <option value="inova">inova</option>
+                  <option value="instituto butantã">instituto butantã</option>
+                  <option value="lago">lago</option>
+                  <option value="matão">matão</option>
+                  <option value="nova reitoria">nova reitoria</option>
+                  <option value="praça do relógio">praça do relógio</option>
+                  <option value="praça do relógio solar">praça do relógio solar</option>
+                  <option value="prefeitura">prefeitura</option>
+                  <option value="ptrem">ptrem</option>
+                  <option value="químicas">químicas</option>
+                  <option value="radio tv USP">radio tv USP</option>
+                  <option value="raia">raia</option>
+                  <option value="subestação de energia">subestação de energia</option>
+                  <option value="sweden">sweden</option>
+                  <option value="terminal de ônibus">terminal de ônibus</option>
+               </select>
+            </div>
+
+            <div class="mb-3">
+               <label for="origem" class="form-label">Origem</label>
+               <select name="origem" id="origem" class="form-select">
+                  <option value="todos">Todos</option>
+                  <option value="photo">Photo</option>
+                  <option value="streetview-google">Streetview Google</option>
+                  <option value="streetview-user">Streetview User</option>
+               </select>
+            </div>
+
+            <div class="mb-3">
+               <label for="texto" class="form-label">Texto</label>
+               <textarea name="texto" id="texto" class="form-control"></textarea>
+            </div>
+
+            <div class="mb-3">
+               <label class="form-label">Você é da AEQ?</label>
+               <div class="form-check form-switch d-flex justify-content-between align-items-center"
+                  style="width: 32%; padding: 0px;">
+                  <span>não</span>
+                  <input class="form-check-input" style="margin-left: 0;" type="checkbox" id="checkboxAEQ"
+                     onclick="toggleSubmit()">
+                  <span>sim</span>
+               </div>
+            </div>
+            <button type="submit" id="submitBtn" class="btn btn-primary" disabled>Submit</button>
+         </form>
+      </div>
+
+      <div class="col-md-8 h-100 p-0 m-0" id="map"></div>
    </div>
 </div>
 
@@ -95,16 +272,52 @@
    }
 
    .marker_img {
-      width: 100%;
+      max-width: 100%;
+      max-height: 180px;
    }
 
    .leaflet-popup-content {
       width: 200px !important;
+      max-height: 300px !important;
+      overflow-y: auto !important;
+   }
+
+   /* Make the modal image fit well in small screens */
+   #modalImage {
+      max-width: 100%;
+      max-height: 180px;
+      margin-bottom: 10px;
+   }
+
+   /* Ensure minimap is responsive */
+   #minimap {
+      width: 100%;
+      height: 200px;
+   }
+
+   .modal-body .col-md-6 {
+      height: 100%;
+      overflow-y: auto;
+   }
+
+   /* Adjust the modal width and height to 90% of the viewport */
+   .modal-dialog {
+      max-width: 90% !important;
+      max-height: 90vh !important;
+   }
+
+   /* Make sure the modal body fills up the available space */
+   .modal-content {
+      height: 90%;
+   }
+
+   /* Make sure modal content doesn't overflow */
+   .modal-body {
+      overflow-y: auto;
    }
 </style>
 
 <script>
-
    var map = L.map('map').setView([-23.55873855243587, -46.72968100025308], 13);
    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
@@ -113,4 +326,18 @@
 
    var markers = L.layerGroup().addTo(map);
 
+   var minimap = L.map('minimap').setView([-23.55873855243587, -46.72968100025308], 15);
+
+   // Disable zoom and drag for static minimap
+   minimap.scrollWheelZoom.disable();  // Disable scroll zoom
+   // minimap.dragging.disable();         // Disable map dragging
+   minimap.touchZoom.disable();        // Disable touch zoom
+   minimap.zoomControl.disable();      // Disable zoom controls
+
+   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap',
+      maxZoom: 19
+   }).addTo(minimap);
+
+   var minimapmarkers = L.layerGroup().addTo(minimap);
 </script>
