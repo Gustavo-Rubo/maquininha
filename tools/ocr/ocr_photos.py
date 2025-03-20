@@ -59,7 +59,7 @@ def ocr(file_og):
         'panoid': '',
         'lat': lat,
         'long': long,
-        'source': 'photo',
+        'origin': 'photo',
         'name': '',
         'ocr': easyocr_res,
         'description': easyocr_res,

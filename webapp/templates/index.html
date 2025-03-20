@@ -88,7 +88,7 @@
 
          markers.clearLayers();
          myJson.forEach(function (item, index) {
-            var marker = L.marker([item.lat, item.long], { icon: icons[item['source']] });
+            var marker = L.marker([item.lat, item.long], { icon: icons[item['origin']] });
             thumb_url = 'thumb/' + item['originalfilepath']
 
             var popupContent = "<div><a href='image/" + item['originalfilepath'] + "'>" +
