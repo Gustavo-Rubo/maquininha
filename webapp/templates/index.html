@@ -70,7 +70,7 @@
          const origem = el["origem"].value;  // Single value from dropdown
          const isAEQ = el["checkboxAEQ"].checked;
 
-         const data = { 'search': submit_text, 'macro': macro, 'origem': origem, 'isAEQ': isAEQ };
+         const data = { 'search': submit_text, 'macro': macro, 'origin': origem, 'isAEQ': isAEQ };
 
          const response = await fetch('/', {
             'method': 'POST',

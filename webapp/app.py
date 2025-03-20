@@ -53,19 +53,16 @@ def index():
 
         data = request.json
         text = data['search']
+        macro = data['macro']
+        origin = data['origin']
 
-        res = []
-        if text == '':
-            res = db
-        else:
-            # TODO: better search function
-            res = db[[str.lower(text) in str.lower(
-                ' '.join(d['ocr'])) for d in db]]
-
-        for r in res:
-            with open(path.join('thumbs', r['originalfilepath']), 'rb') as f:
-                thumb = f.read()
-                r['thumb_data'] = str(base64.b64encode(thumb))
+        res = db
+        if macro != 'todos':
+            res = res[[r['macro'] == macro for r in res]]
+        if origin != 'todos':
+            res = res[[r['origin'] == origin for r in res]]
+        if text != '':
+            res = res[[str.lower(text) in str.lower(' '.join(r['description'])) for r in res]]
 
         return jsonify(list(res))
 
