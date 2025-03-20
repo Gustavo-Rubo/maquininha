@@ -11,7 +11,7 @@ DATABASE_PATH = path.join('..', 'data', 'database.json')
 
 load_dotenv()
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static')
 
 # env_config = getenv("APP_SETTINGS", "config.DevelopmentConfig")
 # app.config.from_object(env_config)
@@ -39,6 +39,10 @@ with open(DATABASE_PATH, 'r') as f:
 @app.route('/image/<path:path>')
 def send_image(path):
     return send_from_directory('images', path)
+
+@app.route('/thumb/<path:path>')
+def send_thumb(path):
+    return send_from_directory('thumbs', path)
 
 
 @app.route('/', methods=['GET', 'POST'])
