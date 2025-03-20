@@ -14,7 +14,7 @@ reprocess_existing = False
 def ocr(file_og):
     file = path.split(file_og)[1]
     panoid = file.split('=')[0]
-    source = 'google' if len(panoid) <= 23 else 'user'
+    source = 'streetview-google' if len(panoid) <= 23 else 'streetview-user'
     long = float(file[:-5].split('=')[1])
     lat = float(file[:-5].split('=')[2])
 

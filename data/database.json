@@ -8,7 +8,7 @@
         "panoid": "",
         "lat": -23.560511972222223,
         "long": -46.735782972222225,
-        "source": "photo",
+        "origin": "photo",
         "name": "",
         "ocr": [
             "5",
@@ -42,7 +42,7 @@
         "panoid": "",
         "lat": -23.559606972222223,
         "long": -46.731563,
-        "source": "photo",
+        "origin": "photo",
         "name": "",
         "ocr": [],
         "description": []
@@ -56,7 +56,7 @@
         "panoid": "",
         "lat": -23.558191,
         "long": -46.72697,
-        "source": "photo",
+        "origin": "photo",
         "name": "",
         "ocr": [],
         "description": []
@@ -70,7 +70,7 @@
         "panoid": "",
         "lat": -23.558254,
         "long": -46.721992972222225,
-        "source": "photo",
+        "origin": "photo",
         "name": "",
         "ocr": [
             ")11))",
@@ -96,7 +96,7 @@
         "panoid": "",
         "lat": -23.557296972222222,
         "long": -46.72804297222223,
-        "source": "photo",
+        "origin": "photo",
         "name": "",
         "ocr": [
             "Er",
@@ -140,7 +140,7 @@
         "panoid": "",
         "lat": -23.562788,
         "long": -46.714162,
-        "source": "photo",
+        "origin": "photo",
         "name": "",
         "ocr": [
             "Fa",
@@ -196,7 +196,7 @@
         "panoid": "",
         "lat": -23.556815,
         "long": -46.734161,
-        "source": "photo",
+        "origin": "photo",
         "name": "",
         "ocr": [
             "8 2763"
@@ -214,7 +214,7 @@
         "panoid": "",
         "lat": -23.564011,
         "long": -46.741092,
-        "source": "photo",
+        "origin": "photo",
         "name": "",
         "ocr": [
             "1",
@@ -300,7 +300,7 @@
         "panoid": "",
         "lat": -23.5643764,
         "long": -46.713489897222225,
-        "source": "photo",
+        "origin": "photo",
         "name": "",
         "ocr": [],
         "description": []
@@ -314,7 +314,7 @@
         "panoid": "",
         "lat": -23.560795972222223,
         "long": -46.733288972222226,
-        "source": "photo",
+        "origin": "photo",
         "name": "",
         "ocr": [],
         "description": []
@@ -328,7 +328,7 @@
         "panoid": "lBg83KF8lXjD82E1bV49Fg",
         "lat": -23.56298630921374,
         "long": -46.721906852647734,
-        "source": "google",
+        "origin": "streetview-google",
         "name": "",
         "ocr": [
             "ESPACBANA "
@@ -346,7 +346,7 @@
         "panoid": "AF1QipMV8OtqDHmcQSoV7Ujtq2kuZMZwqyln6857eg74",
         "lat": -23.5594277084648,
         "long": -46.72483070005298,
-        "source": "user",
+        "origin": "streetview-user",
         "name": "",
         "ocr": [],
         "description": []
@@ -360,7 +360,7 @@
         "panoid": "_KQgEKga-Qk9qU56s3v2fA",
         "lat": -23.561472000864747,
         "long": -46.72539117955254,
-        "source": "google",
+        "origin": "streetview-google",
         "name": "",
         "ocr": [],
         "description": []
@@ -374,7 +374,7 @@
         "panoid": "lkyP2DtqjruAMayrO0-C2g",
         "lat": -23.56275349556366,
         "long": -46.724256655761295,
-        "source": "google",
+        "origin": "streetview-google",
         "name": "",
         "ocr": [],
         "description": []
@@ -388,7 +388,7 @@
         "panoid": "AF1QipMBNiYzHpPG0nyRWyL193AgfPg_pf4IXabjUdjT",
         "lat": -23.563764834991726,
         "long": -46.72932710376055,
-        "source": "user",
+        "origin": "streetview-user",
         "name": "",
         "ocr": [],
         "description": []
@@ -402,7 +402,7 @@
         "panoid": "AF1QipMRJWwm4cXjT8XdZ1S2C5lFEyV5aT-ljxUY86i9",
         "lat": -23.553964172834213,
         "long": -46.73256747883628,
-        "source": "user",
+        "origin": "streetview-user",
         "name": "",
         "ocr": [],
         "description": []
@@ -416,7 +416,7 @@
         "panoid": "AF1QipMDNSr6_hCsVHZi74rBUsMXlbbOy06cwyBxwr9-",
         "lat": -23.568580795077363,
         "long": -46.730983705336584,
-        "source": "user",
+        "origin": "streetview-user",
         "name": "",
         "ocr": [],
         "description": []
@@ -430,7 +430,7 @@
         "panoid": "LsOLGNOejkb54mRMagQIRA",
         "lat": -23.557258158716067,
         "long": -46.734099515634185,
-        "source": "google",
+        "origin": "streetview-google",
         "name": "",
         "ocr": [
             "Luciano",
@@ -460,7 +460,7 @@
         "panoid": "Ky9K7IHnktRAVsSdlVfJhg",
         "lat": -23.556463091203874,
         "long": -46.730090853871,
-        "source": "google",
+        "origin": "streetview-google",
         "name": "",
         "ocr": [],
         "description": []
@@ -474,7 +474,7 @@
         "panoid": "AF1QipMlzGwgg-mY60UWeA26jOh7h6fXCPqp83pF2Ov7",
         "lat": -23.557161327780907,
         "long": -46.72511672894472,
-        "source": "user",
+        "origin": "streetview-user",
         "name": "",
         "ocr": [
             "8e"
@@ -492,7 +492,7 @@
         "panoid": "AF1QipMH1H_DFrFq8Zb5Cjbuo4NuGhJTtnds3nWGy6IB",
         "lat": -23.55940840699866,
         "long": -46.72491633153298,
-        "source": "user",
+        "origin": "streetview-user",
         "name": "",
         "ocr": [],
         "description": []
@@ -506,7 +506,7 @@
         "panoid": "AF1QipMtDZvYwHNzGkLYqc-d2oRp4JYjlZ2rtUAI_RuU",
         "lat": -23.568577172030373,
         "long": -46.730535802316346,
-        "source": "user",
+        "origin": "streetview-user",
         "name": "",
         "ocr": [
             "JDIANA",
@@ -570,7 +570,7 @@
         "panoid": "LOPgePIihtQ-qEQ8jlKmpw",
         "lat": -23.55981306490337,
         "long": -46.739227915612624,
-        "source": "google",
+        "origin": "streetview-google",
         "name": "",
         "ocr": [],
         "description": []
@@ -584,7 +584,7 @@
         "panoid": "lFaA3zL7I6RyfjebRAZDwQ",
         "lat": -23.557782899650874,
         "long": -46.72834731659615,
-        "source": "google",
+        "origin": "streetview-google",
         "name": "",
         "ocr": [
             "E"
@@ -602,7 +602,7 @@
         "panoid": "AF1QipMF9GqZUR8WbL-PALVt1oYAPtG9VRK14eKeq0_d",
         "lat": -23.561264329817828,
         "long": -46.7204470210441,
-        "source": "user",
+        "origin": "streetview-user",
         "name": "",
         "ocr": [
             "52",
@@ -690,7 +690,7 @@
         "panoid": "Khr_Lq1WrlGQrcuXM_W6sA",
         "lat": -23.558647158881598,
         "long": -46.73117571768874,
-        "source": "google",
+        "origin": "streetview-google",
         "name": "",
         "ocr": [],
         "description": []
@@ -704,7 +704,7 @@
         "panoid": "AF1QipMkn8qrclbGR7AOKqvpEMaKPoBePg8gU3_11th5",
         "lat": -23.561400608069064,
         "long": -46.727072286857776,
-        "source": "user",
+        "origin": "streetview-user",
         "name": "",
         "ocr": [],
         "description": []
@@ -718,7 +718,7 @@
         "panoid": "AF1QipMA8uB0nzkw2QjqbuP0y8dNm8y8UNa-knv7fcr8",
         "lat": -23.561466643821774,
         "long": -46.72711263353586,
-        "source": "user",
+        "origin": "streetview-user",
         "name": "",
         "ocr": [
             "Bl",
@@ -750,7 +750,7 @@
         "panoid": "kmW94t8rZrzatsHEA7xYXA",
         "lat": -23.561772340465108,
         "long": -46.71882166799526,
-        "source": "google",
+        "origin": "streetview-google",
         "name": "",
         "ocr": [],
         "description": []
@@ -764,7 +764,7 @@
         "panoid": "AF1QipMW0xSIZyMKnrEisY_hWPr02xN3n77085JsdZ8F",
         "lat": -23.56095893182003,
         "long": -46.72396451008605,
-        "source": "user",
+        "origin": "streetview-user",
         "name": "",
         "ocr": [],
         "description": []
@@ -778,7 +778,7 @@
         "panoid": "kErb22HYHzAat9q5EzUHEA",
         "lat": -23.56289946578253,
         "long": -46.722085923532696,
-        "source": "google",
+        "origin": "streetview-google",
         "name": "",
         "ocr": [],
         "description": []
@@ -792,7 +792,7 @@
         "panoid": "L0T9ibeQ7Zy4Ad0HT5hy8g",
         "lat": -23.561626373110574,
         "long": -46.72124507770129,
-        "source": "google",
+        "origin": "streetview-google",
         "name": "",
         "ocr": [],
         "description": []
@@ -806,7 +806,7 @@
         "panoid": "KaoDbn2JOT4NlWV2o-xONQ",
         "lat": -23.55950690493246,
         "long": -46.73657537954987,
-        "source": "google",
+        "origin": "streetview-google",
         "name": "",
         "ocr": [
             "3",
@@ -898,7 +898,7 @@
         "panoid": "KTujacWNkK-8kR98i1BiZg",
         "lat": -23.56808659353705,
         "long": -46.74020887453234,
-        "source": "google",
+        "origin": "streetview-google",
         "name": "",
         "ocr": [],
         "description": []
@@ -912,7 +912,7 @@
         "panoid": "AF1QipMprvRoyk1cjX67L5owSKHd61BF65R5WLDhdGzd",
         "lat": -23.55944975444079,
         "long": -46.72432237217785,
-        "source": "user",
+        "origin": "streetview-user",
         "name": "",
         "ocr": [
             "2",
@@ -1024,7 +1024,7 @@
         "panoid": "AF1QipMJccur7A4tfUXRE418Gf8Z9LO-oBmzT5sroDaH",
         "lat": -23.557886825384486,
         "long": -46.72345021687637,
-        "source": "user",
+        "origin": "streetview-user",
         "name": "",
         "ocr": [],
         "description": []
@@ -1038,7 +1038,7 @@
         "panoid": "AF1QipMo2DxvEgse5IcXGWtoGuSbyY1Dm9wuazLxzGSO",
         "lat": -23.557312719725047,
         "long": -46.72230629665329,
-        "source": "user",
+        "origin": "streetview-user",
         "name": "",
         "ocr": [],
         "description": []
