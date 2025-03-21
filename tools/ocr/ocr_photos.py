@@ -9,7 +9,7 @@ import PIL.ExifTags
 from glob import glob
 
 easyocr_reader = easyocr.Reader(['pt', 'en'])
-reprocess_existing = True
+reprocess_existing = False
 
 def dms_to_dec(dms):
     return float(dms[0])+float(dms[1])/60+float(dms[2])/3600
@@ -87,13 +87,13 @@ random.shuffle(paths)
 
 start = time.time()
 data = []
-# batch = 800
-# for i, p in enumerate(paths[:batch]):
-#     print(f'ocr {i+1}/{len(paths[:batch])}')
-#     data.append(ocr(p))
-for i, p in enumerate(paths):
-    print(f'ocr {i+1}/{len(paths)}')
+batch = 500
+for i, p in enumerate(paths[:batch]):
+    print(f'ocr {i+1}/{len(paths[:batch])}')
     data.append(ocr(p))
+# for i, p in enumerate(paths):
+#     print(f'ocr {i+1}/{len(paths)}')
+#     data.append(ocr(p))
 stop = time.time()
 
 new_data = [*old_data, *data]
