@@ -4,3 +4,4 @@ python-dotenv
 Flask-Script
 piexif
 pandas
+Gunicorn

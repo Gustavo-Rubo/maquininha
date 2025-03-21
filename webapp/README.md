@@ -1,4 +1,4 @@
-## running the server
+## running the server (dev)
 ```
 export FLASK_APP=app.py
 flask run
@@ -6,6 +6,8 @@ flask db init
 flask db migrate
 flask db upgrade
 ```
+
+## running the server (prod)
 
 
 ### tutoriais usados
