@@ -75,10 +75,10 @@ if not reprocess_existing:
     with open(path.join(base_path, 'data', 'database_photos.json'), 'r') as f:
         old_data = json.load(f)
     new_paths = []
-    old_panoids = [d['panoid'] for d in old_data]
+    old_filepaths = [d['originalfilepath'] for d in old_data]
     for p in paths:
-        panoid = path.split(p)[1].split('=')[0]
-        if panoid not in old_panoids:
+        # panoid = path.split(p)[1].split('=')[0]
+        if p.split('/')[-1] not in old_filepaths:
             new_paths.append(p)
 
     paths = new_paths
@@ -87,7 +87,7 @@ random.shuffle(paths)
 
 start = time.time()
 data = []
-batch = 500
+batch = 300
 for i, p in enumerate(paths[:batch]):
     print(f'ocr {i+1}/{len(paths[:batch])}')
     data.append(ocr(p))

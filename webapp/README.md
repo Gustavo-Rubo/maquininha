@@ -17,6 +17,9 @@ gunicorn --config gunicorn_config.py app:app
 ```
 s3cmd put images/ s3://maquininha-bucket/images/ --recursive
 s3cmd put thumbs/ s3://maquininha-bucket/thumbs/ --recursive
+
+s3cmd setacl s3://maquininha-bucket/images/ --acl-public --recursive
+s3cmd setacl s3://maquininha-bucket/thumbs/ --acl-public --recursive
 ```
 
 ### tutoriais usados
