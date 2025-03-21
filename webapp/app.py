@@ -38,14 +38,14 @@ with open(DATABASE_PATH, 'r') as f:
 def find_dict_index_by_id(dict_list, search_id):
     return next((index for index, d in enumerate(dict_list) if d.get('originalfilepath') == search_id), -1)
 
-def update(item, db):
-    index = find_dict_index_by_id(db, item['file'])
-    db[index]['name'] = item['name']
-    db[index]['description'] = item['desc']
-    with open(DATABASE_PATH, 'w') as f:
-        json.dump(db.tolist(), f)
+# def update(item, db):
+#     index = find_dict_index_by_id(db, item['file'])
+#     db[index]['name'] = item['name']
+#     db[index]['description'] = item['desc']
+#     with open(DATABASE_PATH, 'w') as f:
+#         json.dump(db.tolist(), f)
 
-    return db
+#     return db
 
 
 # @app.route('/image/<path:path>')
@@ -78,57 +78,57 @@ def index():
 
         return jsonify(list(res))
     
-@app.route('/edit', methods=['GET', 'POST'])
-def edit():
-    if request.method == 'GET':
-        return render_template('edit.html')
-    elif request.method == 'POST':
+# @app.route('/edit', methods=['GET', 'POST'])
+# def edit():
+#     if request.method == 'GET':
+#         return render_template('edit.html')
+#     elif request.method == 'POST':
 
-        data = request.json
-        text = data['search']
-        macro = data['macro']
-        origin = data['origin']
+#         data = request.json
+#         text = data['search']
+#         macro = data['macro']
+#         origin = data['origin']
 
-        res = db
-        if macro != 'todos':
-            filter = [r.get('macro', '') == macro for r in res]
-            res = res[filter]
-        if origin != 'todos':
-            res = res[[r.get('origin', '') == origin for r in res]]
-        if text != '':
-            res = res[[str.lower(text) in str.lower(r.get('description', '') + ' ' + r.get('name', '')) for r in res]]
+#         res = db
+#         if macro != 'todos':
+#             filter = [r.get('macro', '') == macro for r in res]
+#             res = res[filter]
+#         if origin != 'todos':
+#             res = res[[r.get('origin', '') == origin for r in res]]
+#         if text != '':
+#             res = res[[str.lower(text) in str.lower(r.get('description', '') + ' ' + r.get('name', '')) for r in res]]
 
-        return jsonify(list(res))
+#         return jsonify(list(res))
     
-@app.route('/editItem', methods=['POST'])
-def editItem():
-    if request.method == 'POST':
+# @app.route('/editItem', methods=['POST'])
+# def editItem():
+#     if request.method == 'POST':
 
-        data = request.json
+#         data = request.json
 
-        print(data)
-        new_db = update(data, db)
-        return jsonify(list(new_db))
+#         print(data)
+#         new_db = update(data, db)
+#         return jsonify(list(new_db))
 
 
-@app.route('/table', methods=['GET', 'POST'])
-def table():
-    if request.method == 'GET':
-        return render_template('table.html', data=db[:100])
-    elif request.method == 'POST':
+# @app.route('/table', methods=['GET', 'POST'])
+# def table():
+#     if request.method == 'GET':
+#         return render_template('table.html', data=db[:100])
+#     elif request.method == 'POST':
 
-        data = request.json
-        text = data['search']
+#         data = request.json
+#         text = data['search']
 
-        res = []
-        if text != '':
-            # TODO: better search function
-            res = db[[str.lower(text) in str.lower(
-                ' '.join(d['description'])) for d in db]]
+#         res = []
+#         if text != '':
+#             # TODO: better search function
+#             res = db[[str.lower(text) in str.lower(
+#                 ' '.join(d['description'])) for d in db]]
 
-            # for r in res:
-            #     with open(path.join('thumbs', r['file']), 'rb') as f:
-            #         thumb = f.read()
-            #         r['thumb_data'] = str(base64.b64encode(thumb))
+#             # for r in res:
+#             #     with open(path.join('thumbs', r['file']), 'rb') as f:
+#             #         thumb = f.read()
+#             #         r['thumb_data'] = str(base64.b64encode(thumb))
 
-        return jsonify(list(res))
+#         return jsonify(list(res))
