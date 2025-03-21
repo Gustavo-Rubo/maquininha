@@ -1,0 +1,372 @@
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+    crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+    function ellipsis(text, maxLength) {
+        if (text.length > maxLength) {
+            return text.substring(0, maxLength) + '...';
+        }
+        return text;
+    }
+
+    function sub_text(text, sub) {
+        return text == '' ? sub : text;
+    }
+
+    // Function to disable or enable submit button based on checkbox
+    function toggleSubmit() {
+        var submitBtn = document.getElementById("submitBtn");
+        var checkbox = document.getElementById("checkboxAEQ");
+        submitBtn.disabled = checkbox.checked;
+    }
+
+    function resetSubmit() {
+        var submitBtn = document.getElementById("submitBtn");
+        var checkbox = document.getElementById("checkboxAEQ");
+        submitBtn.disabled = true;
+        checkbox.checked = true;
+    }
+
+    window.onload = function () {
+        resetSubmit();
+
+        // Set up icons for different origins
+
+        scale = 0.7
+        iconConfig = {
+            iconSize: [25 * scale, 41 * scale],
+            iconAnchor: [12 * scale, 41 * scale],
+            popupAnchor: [1 * scale, -34 * scale],
+            tooltipAnchor: [16 * scale, -28 * scale],
+            shadowSize: [41 * scale, 41 * scale]
+        }
+        const blueIcon = new L.Icon({ iconUrl: 'static/marker-icon-2x-blue.png', ...iconConfig });
+        const redIcon = new L.Icon({ iconUrl: 'static/marker-icon-2x-red.png', ...iconConfig });
+        const greenIcon = new L.Icon({ iconUrl: 'static/marker-icon-2x-green.png', ...iconConfig });
+
+        const icons = {
+            'photo': blueIcon,
+            'streetview-google': redIcon,
+            'streetview-user': greenIcon
+        };
+
+        function openModal(item) {
+            // Populate modal with item details
+            document.getElementById('modalName').textContent = sub_text(item["name"], "");
+            document.getElementById('modalMacro').textContent = sub_text(item["macro"], "[sem macro]");
+            document.getElementById('modalSubmacro').textContent = sub_text(item["submacro"], "[sem submacro]");
+            document.getElementById('modalOrigem').textContent = sub_text(item["origin"], "[sem origem]");
+            document.getElementById('modalDateRecorded').textContent = sub_text(item["daterecorded"], "[sem data]");
+            document.getElementById('modalDescription').textContent = sub_text(item["description"].join(' '), "");
+            document.getElementById('modalFile').value = item['originalfilepath'];
+
+            // Set the image
+            document.getElementById('modalImage').src = 'image/' + item['originalfilepath'];
+            document.getElementById('modalImageLink').href = 'image/' + item['originalfilepath'];
+
+            // Reinitialize the minimap whenever the modal is opened
+            minimapmarkers.clearLayers();
+            var minimapmarker = L.marker([item.lat, item.long]);
+            minimapmarkers.addLayer(minimapmarker);
+            minimap.setView([item.lat + 0.001, item.long - 0.002], 15);
+
+            // Show the modal
+            var myModal = new bootstrap.Modal(document.getElementById('itemModal'));
+            myModal.show();
+        }
+
+        document.getElementById('frm1').onsubmit = async function (e) {
+            e.preventDefault();
+
+            // Get the form input values
+            const el = document.getElementById("frm1").elements;
+            const submit_text = el["texto"].value;
+            const macro = el["macro"].value;  // Single value from dropdown
+            const origem = el["origem"].value;  // Single value from dropdown
+            const isAEQ = el["checkboxAEQ"].checked;
+
+            const data = { 'search': submit_text, 'macro': macro, 'origin': origem, 'isAEQ': isAEQ };
+
+            const response = await fetch('/', {
+                'method': 'POST',
+                'credentials': "omit",
+                'headers': {
+                    "Content-Type": "application/json",
+                },
+                'body': JSON.stringify(data),
+            });
+
+            const myJson = await response.json();
+
+            markers.clearLayers();
+            myJson.forEach(function (item, index) {
+                const marker = L.marker([item.lat, item.long], { icon: icons[item['origin']] });
+
+                const thumb_url = 'thumb/' + item['originalfilepath'];
+                const popupContent = `<div><img class='marker_img' src='${thumb_url}'>
+                          <p class="fw-bold fs-5">${sub_text(item["name"], "[sem nome]")} - ${sub_text(item["macro"], "[sem macro]")}</p>
+                          <p>${sub_text(ellipsis(item["description"].join('; '), 60), "[sem descrição]")}</p></div >
+                          <button type="submit" id="openModalBtn" class="btn btn-primary w-100">+</button>`;
+                marker.bindPopup(popupContent, { autoPan: true });
+
+                marker.on('click', function () {
+                    const button = marker.getPopup().getElement().querySelector("#openModalBtn");
+                    button.onclick = function () {
+                        openModal(item);
+                    };
+                });
+
+                markers.addLayer(marker);
+            });
+
+
+            return false;
+        }
+
+        document.getElementById('editForm').onsubmit = async function (e) {
+            e.preventDefault();
+
+            // Get the form input values
+            const el = document.getElementById("editForm").elements;
+            const name = el["modalName"].value;
+            const desc = el["modalDescription"].value;
+            const originalfilepath = el["modalFile"].value;
+            const data = { 'name': name, 'desc': desc, 'file': originalfilepath };
+
+            const response = await fetch('/editItem', {
+                'method': 'POST',
+                'credentials': "omit",
+                'headers': {
+                    "Content-Type": "application/json",
+                },
+                'body': JSON.stringify(data),
+            });
+        }
+
+    }
+</script>
+
+<!-- Modal Structure -->
+<div class="modal fade" id="itemModal" tabindex="-1" aria-labelledby="itemModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="max-width: 90%; max-height: 90vh;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="itemModalLabel">Item Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body d-flex" style="overflow-y: auto;">
+                <!-- Left Side: Item Information -->
+                <div class="col-md-6">
+                    <form id="editForm">
+                        <input type="hidden" id="modalFile">
+                        <div class="mb-3">
+                            <label for="modalName" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="modalName">
+                        </div>
+                        <p><strong>Macro:</strong> <span id="modalMacro"></span></p>
+                        <p><strong>Submacro:</strong> <span id="modalSubmacro"></span></p>
+                        <p><strong>Origem:</strong> <span id="modalOrigem"></span></p>
+                        <p><strong>Date Recorded:</strong> <span id="modalDateRecorded"></span></p>
+                        <div class="mb-3">
+                            <label for="modalDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="modalDescription" rows="4"></textarea>
+                            <button type="submit" class="btn btn-primary w-100">Submit Changes</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Right Side: Item Image and Minimap -->
+                <div class="col-md-6">
+                    <a id="modalImageLink"><img id="modalImage" class="img-fluid" alt="Item Image"></a>
+                    <div id="minimap" style="height: 200px; margin-top: 10px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid p-0">
+    <div class="row h-100 m-0">
+        <div class="col-md-4 mt-3">
+            <form id="frm1" name="frm1" method="post">
+                <div class="mb-3">
+                    <label for="macro" class="form-label">Macro</label>
+                    <select name="macro" id="macro" class="form-select">
+                        <option value="todos">Todos</option>
+                        <option value="CDI">CDI</option>
+                        <option value="CEPE">CEPE</option>
+                        <option value="CRUSP">CRUSP</option>
+                        <option value="DAMA01">DAMA01</option>
+                        <option value="ECA">ECA</option>
+                        <option value="EEFE">EEFE</option>
+                        <option value="EP">EP</option>
+                        <option value="FAU">FAU</option>
+                        <option value="FEA">FEA</option>
+                        <option value="FFLCH">FFLCH</option>
+                        <option value="FMVZ">FMVZ</option>
+                        <option value="HU">HU</option>
+                        <option value="IAG">IAG</option>
+                        <option value="ICB">ICB</option>
+                        <option value="ICB">ICB</option>
+                        <option value="IEE">IEE</option>
+                        <option value="IF">IF</option>
+                        <option value="IME">IME</option>
+                        <option value="IO">IO</option>
+                        <option value="IP">IP</option>
+                        <option value="IPEN">IPEN</option>
+                        <option value="IPT">IPT</option>
+                        <option value="IRI">IRI</option>
+                        <option value="acadepol">acadepol</option>
+                        <option value="antiga prefeitura">antiga prefeitura</option>
+                        <option value="av. almeida prado">av. almeida prado</option>
+                        <option value="av. antonio barros ulhoa cintra">av. antonio barros ulhoa cintra</option>
+                        <option value="av. da universidade">av. da universidade</option>
+                        <option value="av. ernesto leme">av. ernesto leme</option>
+                        <option value="av. lineu prestes">av. lineu prestes</option>
+                        <option value="av. luciano gualberto">av. luciano gualberto</option>
+                        <option value="av. lúcio martins rodrigues">av. lúcio martins rodrigues</option>
+                        <option value="av. mello moraes">av. mello moraes</option>
+                        <option value="bancos">bancos</option>
+                        <option value="barracões">barracões</option>
+                        <option value="bio">bio</option>
+                        <option value="brasiliana">brasiliana</option>
+                        <option value="centro de informações">centro de informações</option>
+                        <option value="educação">educação</option>
+                        <option value="geo">geo</option>
+                        <option value="inova">inova</option>
+                        <option value="instituto butantã">instituto butantã</option>
+                        <option value="lago">lago</option>
+                        <option value="matão">matão</option>
+                        <option value="nova reitoria">nova reitoria</option>
+                        <option value="praça do relógio">praça do relógio</option>
+                        <option value="praça do relógio solar">praça do relógio solar</option>
+                        <option value="prefeitura">prefeitura</option>
+                        <option value="ptrem">ptrem</option>
+                        <option value="químicas">químicas</option>
+                        <option value="radio tv USP">radio tv USP</option>
+                        <option value="raia">raia</option>
+                        <option value="subestação de energia">subestação de energia</option>
+                        <option value="sweden">sweden</option>
+                        <option value="terminal de ônibus">terminal de ônibus</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="origem" class="form-label">Origem</label>
+                    <select name="origem" id="origem" class="form-select">
+                        <option value="todos">Todos</option>
+                        <option value="photo">Photo</option>
+                        <option value="streetview-google">Streetview Google</option>
+                        <option value="streetview-user">Streetview User</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="texto" class="form-label">Texto</label>
+                    <textarea name="texto" id="texto" class="form-control"></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Você é da AEQ?</label>
+                    <div class="form-check form-switch d-flex justify-content-between align-items-center"
+                        style="width: 32%; padding: 0px;">
+                        <span>não</span>
+                        <input class="form-check-input" style="margin-left: 0;" type="checkbox" id="checkboxAEQ"
+                            onclick="toggleSubmit()">
+                        <span>sim</span>
+                    </div>
+                </div>
+                <button type="submit" id="submitBtn" class="btn btn-primary" disabled>Submit</button>
+            </form>
+        </div>
+
+        <div class="col-md-8 h-100 p-0 m-0" id="map"></div>
+    </div>
+</div>
+
+<style>
+    #map {
+        height: 600px;
+    }
+
+    .marker_img {
+        max-width: 100%;
+        max-height: 180px;
+    }
+
+    .leaflet-popup-content {
+        width: 200px !important;
+        max-height: 300px !important;
+        overflow-y: auto !important;
+    }
+
+    .leaflet-popup-content p {
+        margin: 0.5em 0;
+    }
+
+    /* Make the modal image fit well in small screens */
+    #modalImage {
+        max-width: 100%;
+        max-height: 180px;
+        margin-bottom: 10px;
+    }
+
+    /* Ensure minimap is responsive */
+    #minimap {
+        width: 100%;
+        height: 200px;
+    }
+
+    .modal-body .col-md-6 {
+        height: 100%;
+        overflow-y: auto;
+    }
+
+    /* Adjust the modal width and height to 90% of the viewport */
+    .modal-dialog {
+        max-width: 90% !important;
+        max-height: 90vh !important;
+    }
+
+    /* Make sure the modal body fills up the available space */
+    .modal-content {
+        height: 90%;
+    }
+
+    /* Make sure modal content doesn't overflow */
+    .modal-body {
+        overflow-y: auto;
+    }
+</style>
+
+<script>
+    var map = L.map('map').setView([-23.55873855243587, -46.72968100025308], 14);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap'
+    }).addTo(map);
+
+    var markers = L.layerGroup().addTo(map);
+
+    var minimap = L.map('minimap').setView([-23.55873855243587, -46.72968100025308], 15);
+
+    // Disable zoom and drag for static minimap
+    minimap.scrollWheelZoom.disable();  // Disable scroll zoom
+    // minimap.dragging.disable();         // Disable map dragging
+    minimap.touchZoom.disable();        // Disable touch zoom
+    minimap.zoomControl.disable();      // Disable zoom controls
+
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap',
+        maxZoom: 19
+    }).addTo(minimap);
+
+    var minimapmarkers = L.layerGroup().addTo(minimap);
+</script>
