@@ -68,11 +68,12 @@ def index():
 
         res = db
         if macro != 'todos':
-            res = res[[r['macro'] == macro for r in res]]
+            filter = [r.get('macro', '') == macro for r in res]
+            res = res[filter]
         if origin != 'todos':
-            res = res[[r['origin'] == origin for r in res]]
+            res = res[[r.get('origin', '') == origin for r in res]]
         if text != '':
-            res = res[[str.lower(text) in str.lower(' '.join(r['description'])) for r in res]]
+            res = res[[str.lower(text) in str.lower(r.get('description', '') + ' ' + r.get('name', '')) for r in res]]
 
         return jsonify(list(res))
     
