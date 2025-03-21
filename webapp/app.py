@@ -48,14 +48,13 @@ def update(item, db):
     return db
 
 
-@app.route('/image/<path:path>')
-def send_image(path):
-    return send_from_directory('images', path)
+# @app.route('/image/<path:path>')
+# def send_image(path):
+#     return send_from_directory('images', path)
 
-@app.route('/thumb/<path:path>')
-def send_thumb(path):
-    return send_from_directory('thumbs', path)
-
+# @app.route('/thumb/<path:path>')
+# def send_thumb(path):
+#     return send_from_directory('thumbs', path)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():

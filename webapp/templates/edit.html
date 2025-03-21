@@ -70,9 +70,12 @@
             document.getElementById('modalDescription').textContent = sub_text(item["description"], "");
             document.getElementById('modalFile').value = item['originalfilepath'];
 
+            cdn_path = 'https://maquininha-bucket.sfo2.cdn.digitaloceanspaces.com/'
             // Set the image
-            document.getElementById('modalImage').src = 'image/' + item['originalfilepath'];
-            document.getElementById('modalImageLink').href = 'image/' + item['originalfilepath'];
+            // document.getElementById('modalImage').src = 'image/' + item['originalfilepath'];
+            // document.getElementById('modalImageLink').href = 'image/' + item['originalfilepath'];
+            document.getElementById('modalImage').src = cdn_path + 'images/' + item['originalfilepath'];
+            document.getElementById('modalImageLink').href = cdn_path + 'images/' + item['originalfilepath'];
 
             // Reinitialize the minimap whenever the modal is opened
             minimapmarkers.clearLayers();
@@ -112,7 +115,8 @@
             myJson.forEach(function (item, index) {
                 const marker = L.marker([item.lat, item.long], { icon: icons[item['origin']] });
 
-                const thumb_url = 'thumb/' + item['originalfilepath'];
+                cdn_path = 'https://maquininha-bucket.sfo2.cdn.digitaloceanspaces.com/'
+                const thumb_url = cdn_path + 'thumbs/' + item['originalfilepath'];
                 const popupContent = `<div><img class='marker_img' src='${thumb_url}'>
                           <p class="fw-bold fs-5">${sub_text(item["name"], "[sem nome]")} - ${sub_text(item["macro"], "[sem macro]")}</p>
                           <p>${sub_text(ellipsis(item["description"], 60), "[sem descrição]")}</p></div >
