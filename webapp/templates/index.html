@@ -72,11 +72,11 @@
          document.getElementById('modalImage').src = cdn_path + 'images/' + item['originalfilepath'];
          document.getElementById('modalImageLink').href = cdn_path + 'images/' + item['originalfilepath'];
 
-         // Reinitialize the minimap whenever the modal is opened
-         minimapmarkers.clearLayers();
-         var minimapmarker = L.marker([item.lat, item.long]);
-         minimapmarkers.addLayer(minimapmarker);
-         minimap.setView([item.lat + 0.001, item.long - 0.002], 15);
+         // // Reinitialize the minimap whenever the modal is opened
+         // minimapmarkers.clearLayers();
+         // var minimapmarker = L.marker([item.lat, item.long]);
+         // minimapmarkers.addLayer(minimapmarker);
+         // minimap.setView([item.lat + 0.001, item.long - 0.002], 15);
 
          // Show the modal
          var myModal = new bootstrap.Modal(document.getElementById('itemModal'));
@@ -156,7 +156,7 @@
             <!-- Right Side: Item Image and Minimap -->
             <div class="col-md-6">
                <a id="modalImageLink"><img id="modalImage" class="img-fluid" alt="Item Image"></a>
-               <div id="minimap" style="height: 200px; margin-top: 10px;"></div>
+               <!-- <div id="minimap" style="height: 200px; margin-top: 10px;"></div> -->
             </div>
          </div>
       </div>
@@ -287,7 +287,7 @@
    /* Make the modal image fit well in small screens */
    #modalImage {
       max-width: 100%;
-      max-height: 300px;
+      max-height: 400px;
       margin-bottom: 10px;
    }
 
@@ -328,18 +328,18 @@
 
    var markers = L.layerGroup().addTo(map);
 
-   var minimap = L.map('minimap').setView([-23.55873855243587, -46.72968100025308], 15);
+   // var minimap = L.map('minimap').setView([-23.55873855243587, -46.72968100025308], 15);
 
-   // Disable zoom and drag for static minimap
-   minimap.scrollWheelZoom.disable();  // Disable scroll zoom
-   // minimap.dragging.disable();         // Disable map dragging
-   minimap.touchZoom.disable();        // Disable touch zoom
-   minimap.zoomControl.disable();      // Disable zoom controls
+   // // Disable zoom and drag for static minimap
+   // minimap.scrollWheelZoom.disable();  // Disable scroll zoom
+   // // minimap.dragging.disable();         // Disable map dragging
+   // minimap.touchZoom.disable();        // Disable touch zoom
+   // minimap.zoomControl.disable();      // Disable zoom controls
 
-   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap',
-      maxZoom: 19
-   }).addTo(minimap);
+   // L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+   //    attribution: '© OpenStreetMap',
+   //    maxZoom: 19
+   // }).addTo(minimap);
 
-   var minimapmarkers = L.layerGroup().addTo(minimap);
+   // var minimapmarkers = L.layerGroup().addTo(minimap);
 </script>
