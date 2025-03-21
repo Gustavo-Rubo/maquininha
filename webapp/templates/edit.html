@@ -58,6 +58,9 @@
         };
 
         function openModal(item) {
+            // Reset the form values to ensure the modal is showing the correct data
+            document.getElementById('editForm').reset(); // This will reset the form and clear any previously submitted data
+
             // Populate modal with item details
             document.getElementById('modalName').textContent = sub_text(item["name"], "");
             document.getElementById('modalMacro').textContent = sub_text(item["macro"], "[sem macro]");
@@ -148,7 +151,13 @@
                 },
                 'body': JSON.stringify(data),
             });
+
+            // After submitting, reset the modal form fields and close it
+            document.getElementById('editForm').reset(); // Reset form after submission
+            var myModal = bootstrap.Modal.getInstance(document.getElementById('itemModal'));
+            myModal.hide(); // Close the modal
         }
+
 
     }
 </script>
@@ -298,7 +307,7 @@
 
     .marker_img {
         max-width: 100%;
-        max-height: 180px;
+        max-height: 150px;
     }
 
     .leaflet-popup-content {
@@ -314,7 +323,7 @@
     /* Make the modal image fit well in small screens */
     #modalImage {
         max-width: 100%;
-        max-height: 180px;
+        max-height: 300px;
         margin-bottom: 10px;
     }
 

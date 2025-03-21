@@ -45,6 +45,8 @@ def update(item, db):
     with open(DATABASE_PATH, 'w') as f:
         json.dump(db.tolist(), f)
 
+    return db
+
 
 @app.route('/image/<path:path>')
 def send_image(path):
@@ -90,11 +92,12 @@ def edit():
 
         res = db
         if macro != 'todos':
-            res = res[[r['macro'] == macro for r in res]]
+            filter = [r.get('macro', '') == macro for r in res]
+            res = res[filter]
         if origin != 'todos':
-            res = res[[r['origin'] == origin for r in res]]
+            res = res[[r.get('origin', '') == origin for r in res]]
         if text != '':
-            res = res[[str.lower(text) in str.lower(' '.join(r['description'])) for r in res]]
+            res = res[[str.lower(text) in str.lower(r.get('description', '') + ' ' + r.get('name', '')) for r in res]]
 
         return jsonify(list(res))
     
@@ -103,13 +106,10 @@ def editItem():
     if request.method == 'POST':
 
         data = request.json
-        # name = data['name']
-        # desc = data['desc']
-        # file = data['file']
 
         print(data)
-        update(data, db)
-        return '200'
+        new_db = update(data, db)
+        return jsonify(list(new_db))
 
 
 @app.route('/table', methods=['GET', 'POST'])
