@@ -8,7 +8,7 @@ from PIL import Image
 from glob import glob
 
 easyocr_reader = easyocr.Reader(['pt', 'en'])
-reprocess_existing = False
+reprocess_existing = True
 
 
 def ocr(file_og):
@@ -45,7 +45,7 @@ def ocr(file_og):
         'origin': source,
         'name': '',
         'ocr': easyocr_res,
-        'description': easyocr_res,
+        'description': ' '.join(easyocr_res),
     }
 
 

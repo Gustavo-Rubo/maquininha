@@ -62,7 +62,7 @@ def ocr(file_og):
         'origin': 'photo',
         'name': '',
         'ocr': easyocr_res,
-        'description': easyocr_res,
+        'description': ' '.join(easyocr_res),
     }
 
 

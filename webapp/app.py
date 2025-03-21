@@ -35,6 +35,16 @@ with open(DATABASE_PATH, 'r') as f:
     db = json.load(f)
     db = np.array(db)
 
+def find_dict_index_by_id(dict_list, search_id):
+    return next((index for index, d in enumerate(dict_list) if d.get('originalfilepath') == search_id), -1)
+
+def update(item, db):
+    index = find_dict_index_by_id(db, item['file'])
+    db[index]['name'] = item['name']
+    db[index]['description'] = item['desc']
+    with open(DATABASE_PATH, 'w') as f:
+        json.dump(db.tolist(), f)
+
 
 @app.route('/image/<path:path>')
 def send_image(path):
@@ -65,6 +75,40 @@ def index():
             res = res[[str.lower(text) in str.lower(' '.join(r['description'])) for r in res]]
 
         return jsonify(list(res))
+    
+@app.route('/edit', methods=['GET', 'POST'])
+def edit():
+    if request.method == 'GET':
+        return render_template('edit.html')
+    elif request.method == 'POST':
+
+        data = request.json
+        text = data['search']
+        macro = data['macro']
+        origin = data['origin']
+
+        res = db
+        if macro != 'todos':
+            res = res[[r['macro'] == macro for r in res]]
+        if origin != 'todos':
+            res = res[[r['origin'] == origin for r in res]]
+        if text != '':
+            res = res[[str.lower(text) in str.lower(' '.join(r['description'])) for r in res]]
+
+        return jsonify(list(res))
+    
+@app.route('/editItem', methods=['POST'])
+def editItem():
+    if request.method == 'POST':
+
+        data = request.json
+        # name = data['name']
+        # desc = data['desc']
+        # file = data['file']
+
+        print(data)
+        update(data, db)
+        return '200'
 
 
 @app.route('/table', methods=['GET', 'POST'])
