@@ -51,9 +51,9 @@ def ocr(file_og):
         easyocr_res = ''
 
     return {
-        'id': '',
-        'macroid': '',
-        'submacroid': '',
+        # 'id': '',
+        # 'macroid': '',
+        # 'submacroid': '',
         'daterecorded': datetime,
         'originalfilepath': file,
         'panoid': '',

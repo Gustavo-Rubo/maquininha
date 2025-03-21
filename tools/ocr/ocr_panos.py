@@ -34,9 +34,9 @@ def ocr(file_og):
 
 
     return {
-        'id': '',
-        'macroid': '',
-        'submacroid': '',
+        # 'id': '',
+        # 'macroid': '',
+        # 'submacroid': '',
         'daterecorded': '',
         'originalfilepath': file,
         'panoid': panoid,

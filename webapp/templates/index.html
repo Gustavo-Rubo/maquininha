@@ -63,7 +63,7 @@
          document.getElementById('modalSubmacro').textContent = sub_text(item["submacro"], "[sem submacro]");
          document.getElementById('modalOrigem').textContent = sub_text(item["origin"], "[sem origem]");
          document.getElementById('modalDateRecorded').textContent = sub_text(item["daterecorded"], "[sem data]");
-         document.getElementById('modalDescription').textContent = sub_text(item["description"].join('; '), "[sem descrição]");
+         document.getElementById('modalDescription').textContent = sub_text(item["description"], "[sem descrição]");
 
          // Set the image
          document.getElementById('modalImage').src = 'image/' + item['originalfilepath'];

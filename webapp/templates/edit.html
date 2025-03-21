@@ -64,7 +64,7 @@
             document.getElementById('modalSubmacro').textContent = sub_text(item["submacro"], "[sem submacro]");
             document.getElementById('modalOrigem').textContent = sub_text(item["origin"], "[sem origem]");
             document.getElementById('modalDateRecorded').textContent = sub_text(item["daterecorded"], "[sem data]");
-            document.getElementById('modalDescription').textContent = sub_text(item["description"].join(' '), "");
+            document.getElementById('modalDescription').textContent = sub_text(item["description"], "");
             document.getElementById('modalFile').value = item['originalfilepath'];
 
             // Set the image
@@ -112,7 +112,7 @@
                 const thumb_url = 'thumb/' + item['originalfilepath'];
                 const popupContent = `<div><img class='marker_img' src='${thumb_url}'>
                           <p class="fw-bold fs-5">${sub_text(item["name"], "[sem nome]")} - ${sub_text(item["macro"], "[sem macro]")}</p>
-                          <p>${sub_text(ellipsis(item["description"].join('; '), 60), "[sem descrição]")}</p></div >
+                          <p>${sub_text(ellipsis(item["description"], 60), "[sem descrição]")}</p></div >
                           <button type="submit" id="openModalBtn" class="btn btn-primary w-100">+</button>`;
                 marker.bindPopup(popupContent, { autoPan: true });
 
